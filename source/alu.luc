@@ -1,0 +1,47 @@
+module alu (
+    input a[32],
+    input b[32],
+    input alufn_signal[6],
+    output out[32],
+    output z,
+    output v,
+    output n
+) {
+    sig rst
+    adder adder(#SIZE(32));
+    // compare compare;
+    
+    always {
+        // implement alu logic here
+        // connect inputs to adder
+               
+        adder.a = a;
+        adder.b = b;
+        adder.alufn_signal = alufn_signal[0];
+        
+        // out = 0
+        // flags from adder
+        z = adder.z;
+        v = adder.v;
+        n = adder.n;
+        
+        // compare.z = z;
+        // compare.v = v;
+        // compare.n = n;
+        // compare.alufn = alufn;
+        
+        // adder result
+        out = adder.out;
+        
+        // comparison result, concatenate 31 zero bits
+        // out = c{31x{b0}, compare.cmp};
+        
+        // boolean unit test case
+        // alu_output = boolean.bool;
+        
+        // shifter unit test case
+        // alu_output = shifter.shift
+    }
+    
+    
+}

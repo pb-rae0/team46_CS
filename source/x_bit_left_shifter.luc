@@ -1,0 +1,29 @@
+module x_bit_left_shifter #(
+    SIZE = 32: SIZE > 0,
+    SHIFT = 8: SHIFT > -1 & SHIFT < SIZE
+)(
+    input a[SIZE], // Input signal A
+    input shift,  // Shift amount 
+    input pad, // Padding
+    input direction, // Direction of shift
+    output out[SIZE] 
+) {
+    mux_2 shift_unit[SIZE]; // Array of mux_2
+            
+    always {        
+        repeat(i, SIZE) {
+            shift_unit.s0 = SIZEx{shift}; // Shift signal to control mux
+
+            if (direction == 0) { // SHL
+                shift_unit.in[i][0] = a[i]
+                shift_unit.in[i][1] = (i >= SHIFT) ? a[i - SHIFT] : pad;
+            } else { // SHR or SRA
+                shift_unit.in[i][0] = a[i];
+                shift_unit.in[i][1] = (i < SIZE - SHIFT) ? a[i + SHIFT] : pad;
+            }
+        }
+        repeat (i, SIZE) {
+            out = shift_unit.out;
+        }
+    }
+}

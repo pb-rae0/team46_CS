@@ -1,0 +1,57 @@
+module alu_manual_tester #(
+    CLK_FREQ ~ 1000 : CLK_FREQ > 0
+)(
+    input clk,  // clock
+    input rst,  // reset
+    input io_button[5],
+    input io_dip[3][8],
+    output io_led[3][8],
+    output io_segment[8],
+    output io_select[4]
+) {
+    
+    // sig out[32];
+    // sig z;
+    // sig v;
+    // sig n;
+    
+    alu alu;
+        
+    always {
+        
+               
+        // io_led[3] = out[31:24];
+        // io_led[4][0] = z;
+        // io_led[4][1] = v;
+        // io_led[4][2] = n;
+        
+        // implement alu tester logic here
+        // a = 32b00000000000000000000000000000000;
+        // b = 32b00000000000000000000000000000000;
+        // alufn_signal = 6b000110;  // Test for a == b condition
+        
+        alu.a = 0
+        alu.b = 0
+        alu.alufn_signal = 0
+        
+        io_led = 3x{{8h0}};
+        io_segment = 0;
+        io_select = 4hF;
+             
+        
+        // io_led = alu_instance.out;
+        // io_segment = alu_instance.z;
+        
+        // test cases
+      
+        // alu_instance.a = a;
+        // alu_instance.b = b;
+        // alu_instance.alufn_signal = alufn_signal;
+        
+        // alu_instance.out = out;
+        // alu_instance.z = z;
+        // alu_instance.v = v;
+        // alu_instance.n = n;
+        
+    }
+}

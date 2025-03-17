@@ -1,0 +1,34 @@
+module shifter (
+    input a[32],        // 32-bit input data (A)
+    input b[5],         // Shift count (B[4:0] - 5 bits)
+    input alufn[2],     // Control signal for selecting shift operation (00: SHL, 01: SHR, 11: SRA)
+    output out[32]      // 32-bit output shifted data
+) {
+
+    always {
+        case (alufn[1:0]) { 
+            b00: repeat(i, 32) { // SHL
+                    if (i < b) {
+                    out[31 - i] = 0;
+                } else {
+                out[31 - i] = a[1 - i - b]
+                }
+            }
+            b01: repeat(i, 32) { // SHR
+                    if (i < b) {
+                    out[i] = 0;
+                } else {
+                    out[i] = a[1 - i - b];
+                }
+            }
+            b11: repeat(i, 32) { // SRA
+                    if (i < b) {
+                       out[i] = a[31]
+                    } else {
+                        out[i] = a[1 - i - b];
+                    }
+                }
+            default: out = a;
+        }
+    }
+}

@@ -1,0 +1,23 @@
+module boolean (
+    input a[32],
+    input b[32],
+    input alufn_signal[6],
+    output bool[32]
+) {
+    // mux_4 mux_4_32[32];
+    
+    always {
+        // implement boolean unit logic here
+        
+        // loop through each bit of a and b
+        case(alufn_signal[3:0]) { 
+        b1000: bool = a & b; // AND: 1000
+        b1110: bool = a | b; // OR: 1110    
+        b0110: bool = a ^ b; // XOR: 0110      
+        b1010: bool = a;     // Pass-through a: 1010 
+        default: bool = 32b0; 
+        }
+        
+    }
+    
+}

@@ -1,0 +1,41 @@
+module adder #(
+    SIZE ~ 32 : SIZE > 1
+)(
+    input a[SIZE],
+    input b[SIZE],
+    input alufn_signal[6],
+    output out[SIZE],
+    output z,
+    output v,
+    output n
+) {
+    rca rca(#SIZE(SIZE));
+    
+    // store flipped bits
+    sig xb[SIZE];
+    
+    always {
+        // implement adder/subtractor unit logic here
+        
+        // flip bits of b and add the carry-in
+        xb = b ^ SIZEx{alufn_signal[0]};
+        
+        // perform addition and subtraction using rca
+        rca.a = a;
+        rca.b = xb;
+        rca.cin = alufn_signal[0];
+        
+        // output
+        out = rca.s
+        
+        // z is true if all bits are zero
+        z = ~|rca.s
+        
+        // v is true if overflow occurs
+        v = (~a[SIZE-1] & ~xb[SIZE-1] & rca.s[SIZE-1]) | (a[SIZE-1] & xb[SIZE-1] & ~rca.s[SIZE-1])
+        
+        // n is true if the result is negative
+        n = rca.s[SIZE-1]
+        
+    }
+}
