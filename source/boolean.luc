@@ -4,19 +4,43 @@ module boolean (
     input alufn_signal[6],
     output bool[32]
 ) {
-    // mux_4 mux_4_32[32];
+    mux_4 mux_4_32[32];
     
     always {
         // implement boolean unit logic here
         
+        // create 32 copies of ALUFN signal as input to each mux_4 unit 
+        // the double curly brackets are intentional because
+        // we are creating 2D array: 32 by 4 bits
+        
+        // 4-bit ALUFN[3:0] as input and produce a 32-bit output
+        mux_4_32.in = 32x{{alufn_signal[3:0]}}; 
+      
+        // Pass in a and b as respective selector slots
+        
+        mux_4_32.in[0] = 32x{alufn_signal[0]}
+        mux_4_32.in[1] = 32x{alufn_signal[1]}
+        mux_4_32.in[2] = 32x{alufn_signal[2]}
+        mux_4_32.in[3] = 32x{alufn_signal[3]}
+        
+        mux_4_32.s0 = a
+        mux_4_32.s1 = b
+       
+        bool = mux_4_32.out;
+        
         // loop through each bit of a and b
-        case(alufn_signal[3:0]) { 
-        b1000: bool = a & b; // AND: 1000
-        b1110: bool = a | b; // OR: 1110    
-        b0110: bool = a ^ b; // XOR: 0110      
-        b1010: bool = a;     // Pass-through a: 1010 
-        default: bool = 32b0; 
-        }
+        //case(alufn_signal[3:0]) { 
+            //b1000: bool = a & b; // AND: 1000
+            //b1110: bool = a | b; // OR: 1110    
+            //b0110: bool = a ^ b; // XOR: 0110      
+            //b1010: bool = a;     // Pass-through a: 1010 
+            //default: bool = 32b0; 
+        //}
+        
+        // a = 32b11110000111100001111000011110000;
+        // b = 32b00001111000011110000111100001111;
+        // alufn_signal = 4b1000; // AND operation
+
         
     }
     

@@ -1,29 +1,30 @@
 module x_bit_left_shifter #(
-    SIZE = 32: SIZE > 0,
-    SHIFT = 8: SHIFT > -1 & SHIFT < SIZE
+    SIZE = 31 : SIZE > 0,
+    SHIFT = 8 : SHIFT > -1 & SHIFT < SIZE
 )(
-    input a[SIZE], // Input signal A
-    input shift,  // Shift amount 
-    input pad, // Padding
-    input direction, // Direction of shift
-    output out[SIZE] 
+    input a[SIZE],
+    input do_shift,
+    input pad, // in this case, pad should be 0
+    output out[SIZE]
 ) {
-    mux_2 shift_unit[SIZE]; // Array of mux_2
-            
-    always {        
-        repeat(i, SIZE) {
-            shift_unit.s0 = SIZEx{shift}; // Shift signal to control mux
+    // declare an array of SIZE instances of the mux_2 module
+    mux_2 shift_unit[SIZE]
 
-            if (direction == 0) { // SHL
-                shift_unit.in[i][0] = a[i]
-                shift_unit.in[i][1] = (i >= SHIFT) ? a[i - SHIFT] : pad;
-            } else { // SHR or SRA
-                shift_unit.in[i][0] = a[i];
-                shift_unit.in[i][1] = (i < SIZE - SHIFT) ? a[i + SHIFT] : pad;
-            }
+    sig shifted_pattern[SIZE]
+    
+    always {
+        // define each s0 in the array of mux_2 as do_shift (necessity of shift for current x-bit-shift)
+        shift_unit.s0 = SIZEx{do_shift}
+        
+        // remaining pattern
+        shifted_pattern = a[SIZE - 1 - SHIFT:0]
+        
+        // for each bit, represented by an array of mux_2, set input as new shifted pattern
+        repeat (i, SIZE){
+            shift_unit.in[i] = c{shifted_pattern, SHIFTx{pad}}
         }
-        repeat (i, SIZE) {
-            out = shift_unit.out;
-        }
+        
+        // output only reflects shifted pattern if do_shift set to 1
+        out = shift_unit.out
     }
 }

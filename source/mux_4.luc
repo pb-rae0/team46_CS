@@ -3,7 +3,6 @@ module mux_4 (
     input s0,  
     input s1,
     input in[4], 
-    input sel[2],
     output out
   ) {
 
@@ -13,7 +12,7 @@ module mux_4 (
       b01: out = in[1];
       b10: out = in[2];
       b11: out = in[3];
-      default: out = in[sel];
+      default: out = 0;
         
     }
   }
