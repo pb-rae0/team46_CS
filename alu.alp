@@ -130,6 +130,24 @@
                     "type": "DiskFile",
                     "path": "source/left_shifter.luc"
                 }
+            },
+            {
+                "file": {
+                    "type": "DiskFile",
+                    "path": "source/right_shifter.luc"
+                }
+            },
+            {
+                "file": {
+                    "type": "DiskFile",
+                    "path": "source/x_bit_right_shifter.luc"
+                }
+            },
+            {
+                "file": {
+                    "type": "DiskFile",
+                    "path": "source/right_arith_shifter.luc"
+                }
             }
         ],
         "constraintFiles": [

@@ -1,0 +1,38 @@
+module right_shifter #(
+    SIZE = 32 : SIZE > 0
+)(
+    input a[SIZE], 
+    input b[5], 
+    input pad,
+    output shr[SIZE]
+) {
+    x_bit_left_shifter shift_16(#SHIFT(16));
+    x_bit_left_shifter shift_8(#SHIFT(8));
+    x_bit_left_shifter shift_4(#SHIFT(4));
+    x_bit_left_shifter shift_2(#SHIFT(2));
+    x_bit_left_shifter shift_1(#SHIFT(1));
+    
+    always {
+        shift_16.pad = pad;
+        shift_8.pad = pad;
+        shift_4.pad = pad;
+        shift_2.pad = pad;
+        shift_1.pad = pad;
+        
+        // Shift control signals
+        shift_16.do_shift = b[4];
+        shift_8.do_shift = b[3];
+        shift_4.do_shift = b[2];
+        shift_2.do_shift = b[1];
+        shift_1.do_shift = b[0];
+        
+        // Cascade shifts
+        shift_16.a = a[31:0];
+        shift_8.a = shift_16.out;
+        shift_4.a = shift_8.out;
+        shift_2.a = shift_4.out;
+        shift_1.a = shift_2.out;
+        
+        shr = shift_1.out;
+    }
+}

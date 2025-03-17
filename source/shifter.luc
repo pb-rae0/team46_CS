@@ -4,31 +4,42 @@ module shifter (
     input alufn[2],     // Control signal for selecting shift operation (00: SHL, 01: SHR, 11: SRA)
     output out[32]      // 32-bit output shifted data
 ) {
+    sig shl[32];         // Shift Left result
+    sig shr[32];         // Shift Right result
+    sig sra[32];         // Shift Right Arithmetic result
 
+    left_shifter shl_unit;
+    right_shifter shr_unit;
+    right_arith_shifter sra_unit;
+    
     always {
-        case (alufn[1:0]) { 
-            b00: repeat(i, 32) { // SHL
-                    if (i < b) {
-                    out[31 - i] = 0;
-                } else {
-                out[31 - i] = a[1 - i - b]
-                }
-            }
-            b01: repeat(i, 32) { // SHR
-                    if (i < b) {
-                    out[i] = 0;
-                } else {
-                    out[i] = a[1 - i - b];
-                }
-            }
-            b11: repeat(i, 32) { // SRA
-                    if (i < b) {
-                       out[i] = a[31]
-                    } else {
-                        out[i] = a[1 - i - b];
-                    }
-                }
-            default: out = a;
+        // Left shift connections
+        shl_unit.a = a;
+        shl_unit.b = b;
+        shl_unit.pad = 0;
+        
+        // Right shift connections
+        shr_unit.a = a;
+        shr_unit.b = b;
+        shr_unit.pad = 0;
+        
+        sra_unit.a = a;
+        sra_unit.b = b;
+        sra_unit.pad = a[31]; // Padding for SRA
+        
+        shl = shl_unit.shl;
+        shr = shr_unit.shr;
+        sra = sra_unit.sra
+        
+        // ALUFN signals
+        case (alufn[1:0]) {
+            b00: out = shl;   // SHL
+            b01: out = shr;   // SHR
+            b11: out = sra;   // SRA
+            default: out = a; // Pass-through A
         }
+        
+        
+        
     }
 }

@@ -1,0 +1,25 @@
+module x_bit_right_shifter #(
+    SIZE = 32 : SIZE > 0,         // Size of the input/output (default: 32)
+    SHIFT = 8 : SHIFT > -1 & SHIFT < SIZE // Number of bits to shift
+)(
+    input a[SIZE],                // Input data to be shifted
+    input do_shift,               // Control signal: perform shift if `do_shift` is 1
+    input pad,                    // Padding value (0 for logical, A[31] for arithmetic)
+    output out[SIZE]              // Output after shifting
+) {
+    mux_2 shift_unit[SIZE];       // Array of 32 multiplexers
+
+    sig shifted_pattern[SIZE];    // Temporary signal for shifted data
+
+    always {
+        shift_unit.s0 = SIZEx{do_shift}
+
+        shifted_pattern = a[SIZE-1:SHIFT];
+
+        repeat (i, SIZE){
+            shift_unit.in[i] = c{SHIFTx{pad}, shifted_pattern}
+        }
+
+        out = shift_unit.out;
+    }
+}
