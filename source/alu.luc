@@ -52,7 +52,7 @@ module alu (
         {
             // adder result
             b00: 
-                case(alufn_signal[0]) { 
+                case(alufn_signal[1:0]) { 
                     b0: out = adder.out;
                     b1: out = multiplier.mul;
                     default: out = 32b0;

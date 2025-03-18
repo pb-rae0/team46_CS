@@ -1,13 +1,12 @@
-module alu_manual_tester #(
-    CLK_FREQ ~ 1000 : CLK_FREQ > 0
-)(
+module alu_manual_tester (
     input clk,  // clock
     input rst,  // reset
     input io_button[5],
     input io_dip[3][8],
     output io_led[3][8],
     output io_segment[8],
-    output io_select[4]
+    output io_select[4],
+    output led[8]
 ) {
     
     // sig out[32];
@@ -19,9 +18,49 @@ module alu_manual_tester #(
     // sig b_reg[32];
     // sig btn_pressed;
     
-    button_conditioner btn_cond(.clk(clk), .in(io_button[0]), #CLK_FREQ(CLK_FREQ));
-    edge_detector btn_edge(.clk(clk), .in(btn_cond.out));
+    enum States {
+        SET_A_L,
+        SET_A_H,
+        SET_B_L,
+        SET_B_H,
+        TEST,
+        INIT
+    }
     
+    const SIZE = 32
+    const SEVEN_SEG_DIV = $is_sim() ? 3 : 16 // put 3 for sim, 16 on hardware 
+    const CLK_FREQ = $is_sim() ? 1000 : 10000000 // put 1000 only for sim, 10M on hardware
+    
+    button_conditioner btn_cond[5](
+        .clk(5x{{clk}}),
+        #CLK_FREQ(5x{{CLK_FREQ}}));
+    
+    edge_detector btn_edge[5](
+        #RISE(5x{{1}}), 
+        #FALL(5x{{0}}),
+        .clk(5x{{clk}}));
+    
+    bin_to_dec decimal_renderer(#DIGITS(4), #LEADING_ZEROS(1))
+
+    multi_seven_seg seg(
+        #DIV(SEVEN_SEG_DIV),
+        .clk(clk),
+        .rst(rst))
+    
+    dff states[$width(States)](#INIT(States.INIT), .clk(clk))
+    
+    dff x[SIZE] (
+        .clk(clk),
+        .rst(rst))
+    
+    dff y[SIZE] (
+        .clk(clk),
+        .rst(rst)
+        )
+    dff current[SIZE](
+        .clk(clk),
+        .rst(rst)
+    )
     
     //fsm state(.clk(clk)) = {A_LOW, A_HIGH, B_LOW, B_HIGH, TEST}
     
@@ -30,7 +69,14 @@ module alu_manual_tester #(
         
     always {
         
-               
+        btn_cond.in = io_button
+        btn_edge.in = btn_cond.out
+        
+        states.d = states.q
+        x.d = x.q
+        y.d = y.q
+        current.d = current.q
+        
         // io_led[3] = out[31:24];
         // io_led[4][0] = z;
         // io_led[4][1] = v;
@@ -45,15 +91,111 @@ module alu_manual_tester #(
         alu.b = 0
         alu.alufn_signal = 0
         
-        io_led = 3x{{8h0}};
-        io_segment = 0;
-        io_select = 4hF;
+        // io_led = 3x{{8h0}};
+        // io_segment = 0;
+        // io_select = 4hF;
              
-        
         // io_led = alu_instance.out;
         // io_segment = alu_instance.z;
         
         // test cases
+        
+        case (states.q) {
+            States.INIT:
+            if (btn_edge.out[0]) {
+                states.d = States.SET_A_L
+                }
+            else if (btn_edge.out[2]) {
+                states.d = States.SET_A_H
+                }
+            else if (btn_edge.out[3]) {
+                states.d = States.SET_B_L        
+                }
+            else if (btn_edge.out[4]) {
+                states.d = States.SET_B_H
+                }
+            else if (btn_edge.out[1]) {
+                states.d = States.TEST
+                }
+            States.TEST:
+                alu.a = x.q
+                alu.b = y.q
+                alu.alufn_signal = io_dip[2][5:0]
+            if (btn_edge.out[1]) {
+                states.d = States.INIT
+                }
+            
+            // 16 LSBs
+            States.SET_A_L: 
+                x.d[15:0] = c{io_dip[1], io_dip[0]}
+                states.d = States.INIT
+            
+            States.SET_A_H:
+                x.d[31:16] = c{io_dip[1], io_dip[0]}
+                states.d = States.INIT     
+            
+            States.SET_B_L:
+                y.d[15:0] = c{io_dip[1], io_dip[0]}
+                states.d = States.INIT
+            
+            States.SET_B_H:
+                y.d[31:16] = c{io_dip[1], io_dip[0]}
+                states.d = States.INIT
+        }
+            
+        // 7 segments display
+        case (alu.z) {
+            b0:
+                current.d[2] = 1b0
+                current.d[5] = 1b0
+                current.d[6] = 1b0
+            b1:
+                current.d[2] = 1b1
+                current.d[5] = 1b1
+                current.d[6] = 1b1
+            
+            default:
+                current.d[2] = 1b0
+                current.d[5] = 1b0
+                current.d[6] = 1b0
+        }
+        
+        case (alu.v) {
+            b0:
+                current.d[1] = 1b0
+                current.d[3] = 1b0
+            b1:
+                current.d[1] = 1b1
+                current.d[3] = 1b1
+            
+            default:
+                current.d[1] = 1b0
+                current.d[3] = 1b0
+        }
+        
+        case (alu.n) {
+            b0:
+                current.d[0] = 1b0
+            b1:
+                current.d[0] = 1b1            
+            default:
+                current.d[0] = 1b0
+        }
+        
+        decimal_renderer.value = current.q;
+        
+        // decimal_renderer.value = current.q
+        seg.values = decimal_renderer.digits
+        //seg.values = d4x{d8h0 | decimal_renderer.digits};
+        
+        io_segment = ~seg.seg
+        io_select = ~seg.sel
+        
+        io_led[0] = alu.out[7:0]
+        io_led[1] = alu.out[15:8]
+        io_led[2] = alu.out[23:16]
+        led = alu.out[31:24]
+        
       
         // alu_instance.a = a;
         // alu_instance.b = b;
