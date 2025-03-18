@@ -6,11 +6,11 @@ module right_arith_shifter #(
     input pad,            // Padding value (sign bit A[31])
     output sra[SIZE]      // Output after arithmetic right shift
 ) {
-    x_bit_right_shifter arith_shift_16(#SHIFT(16));
-    x_bit_right_shifter arith_shift_8(#SHIFT(8));
-    x_bit_right_shifter arith_shift_4(#SHIFT(4));
-    x_bit_right_shifter arith_shift_2(#SHIFT(2));
-    x_bit_right_shifter arith_shift_1(#SHIFT(1));
+    x_bit_right_a_shifter arith_shift_16(#SHIFT(16));
+    x_bit_right_a_shifter arith_shift_8(#SHIFT(8));
+    x_bit_right_a_shifter arith_shift_4(#SHIFT(4));
+    x_bit_right_a_shifter arith_shift_2(#SHIFT(2));
+    x_bit_right_a_shifter arith_shift_1(#SHIFT(1));
 
     always {
         // Connect padding for arithmetic shift (sign bit A[31])
