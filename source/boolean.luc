@@ -15,16 +15,24 @@ module boolean (
         
         // 4-bit ALUFN[3:0] as input and produce a 32-bit output
         mux_4_32.in = 32x{{alufn_signal[3:0]}}; 
-      
+     
+        
+        // mux_4_32.in[0] = 32x{alufn_signal[0]}
+        // mux_4_32.in[1] = 32x{alufn_signal[1]}
+        // mux_4_32.in[2] = 32x{alufn_signal[2]}
+        // mux_4_32.in[3] = 32x{alufn_signal[3]}
+        
         // Pass in a and b as respective selector slots
         
-        mux_4_32.in[0] = 32x{alufn_signal[0]}
-        mux_4_32.in[1] = 32x{alufn_signal[1]}
-        mux_4_32.in[2] = 32x{alufn_signal[2]}
-        mux_4_32.in[3] = 32x{alufn_signal[3]}
-        
-        mux_4_32.s0 = a
-        mux_4_32.s1 = b
+        repeat(i, 32) {
+            // mux_4_32.in[i][0] = a & b;
+            // mux_4_32.in[i][1] = a | b;
+            // mux_4_32.in[i][2] = a ^ b;
+            // mux_4_32.in[i][3] = a;
+            
+            mux_4_32.s0[i] = a[i];
+            mux_4_32.s1[i] = b[i];
+        }
        
         bool = mux_4_32.out;
         
