@@ -46,22 +46,29 @@ module alu (
         multiplier.a = a;
         multiplier.b = b;
         
-        out = multiplier.mul;
+        //out = multiplier.mul;
         
         case (alufn_signal[5:4])
         {
             // adder result
-            b00: out = adder.out;
+            b00: 
+                case(alufn_signal[0]) { 
+                    b0: out = adder.out;
+                    b1: out = multiplier.mul;
+                    default: out = 32b0;
+                }
             
             // comparison result, concatenate 31 zero bits
-            b01: out = c{31x{b0}, compare.cmp};
+            b01: out = boolean.bool;
             
             // boolean unit test case
-            b10: out = boolean.bool;
+            b10: out = shifter.out;
             
             // shifter unit test case
-            b11: out = shifter.out;
+            b11: out = c{31x{b0}, compare.cmp};
+            
             default: out = 32b0;
+            
         }
        
     }

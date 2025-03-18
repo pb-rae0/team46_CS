@@ -15,9 +15,9 @@ module alu_manual_tester #(
     // sig v;
     // sig n;
     
-    sig a_reg[32];
-    sig b_reg[32];
-    sig btn_pressed;
+    // sig a_reg[32];
+    // sig b_reg[32];
+    // sig btn_pressed;
     
     button_conditioner btn_cond(.clk(clk), .in(io_button[0]), #CLK_FREQ(CLK_FREQ));
     edge_detector btn_edge(.clk(clk), .in(btn_cond.out));
@@ -27,7 +27,6 @@ module alu_manual_tester #(
     
     alu alu
     // multi_seven_seg seg(.clk(clk), .rst(rst));
-  
         
     always {
         
