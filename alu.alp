@@ -172,6 +172,12 @@
                     "type": "DiskFile",
                     "path": "source/divider.luc"
                 }
+            },
+            {
+                "file": {
+                    "type": "DiskFile",
+                    "path": "source/x_bit_right_a_shifter.luc"
+                }
             }
         ],
         "constraintFiles": [

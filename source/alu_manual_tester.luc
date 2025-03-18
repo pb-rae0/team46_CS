@@ -9,15 +9,7 @@ module alu_manual_tester (
     output led[8]
 ) {
     
-    // sig out[32];
-    // sig z;
-    // sig v;
-    // sig n;
-    
-    // sig a_reg[32];
-    // sig b_reg[32];
-    // sig btn_pressed;
-    
+   
     enum States {
         SET_A_L,
         SET_A_H,
@@ -62,10 +54,8 @@ module alu_manual_tester (
         .rst(rst)
     )
     
-    //fsm state(.clk(clk)) = {A_LOW, A_HIGH, B_LOW, B_HIGH, TEST}
     
     alu alu
-    // multi_seven_seg seg(.clk(clk), .rst(rst));
         
     always {
         
@@ -77,28 +67,13 @@ module alu_manual_tester (
         y.d = y.q
         current.d = current.q
         
-        // io_led[3] = out[31:24];
-        // io_led[4][0] = z;
-        // io_led[4][1] = v;
-        // io_led[4][2] = n;
         
-        // implement alu tester logic here
-        // a = 32b00000000000000000000000000000000;
-        // b = 32b00000000000000000000000000000000;
-        // alufn_signal = 6b000110;  // Test for a == b condition
         
         alu.a = 0
         alu.b = 0
         alu.alufn_signal = 0
         
-        // io_led = 3x{{8h0}};
-        // io_segment = 0;
-        // io_select = 4hF;
-             
-        // io_led = alu_instance.out;
-        // io_segment = alu_instance.z;
         
-        // test cases
         
         case (states.q) {
             States.INIT:
@@ -143,7 +118,9 @@ module alu_manual_tester (
                 states.d = States.INIT
         }
             
+        // test cases
         // 7 segments display
+        // 100 if no overflow
         case (alu.z) {
             b0:
                 current.d[2] = 1b0
@@ -160,7 +137,7 @@ module alu_manual_tester (
                 current.d[6] = 1b0
         }
         
-        case (alu.v) {
+        case (alu.v) { // 10 if overflow, 3rd io_segment 
             b0:
                 current.d[1] = 1b0
                 current.d[3] = 1b0
@@ -173,6 +150,7 @@ module alu_manual_tester (
                 current.d[3] = 1b0
         }
         
+        // 1 if overflow, 4th io_segment (from left)
         case (alu.n) {
             b0:
                 current.d[0] = 1b0
@@ -184,9 +162,7 @@ module alu_manual_tester (
         
         decimal_renderer.value = current.q;
         
-        // decimal_renderer.value = current.q
         seg.values = decimal_renderer.digits
-        //seg.values = d4x{d8h0 | decimal_renderer.digits};
         
         io_segment = ~seg.seg
         io_select = ~seg.sel
@@ -197,14 +173,7 @@ module alu_manual_tester (
         led = alu.out[31:24]
         
       
-        // alu_instance.a = a;
-        // alu_instance.b = b;
-        // alu_instance.alufn_signal = alufn_signal;
-        
-        // alu_instance.out = out;
-        // alu_instance.z = z;
-        // alu_instance.v = v;
-        // alu_instance.n = n;
+       
         
     }
 }

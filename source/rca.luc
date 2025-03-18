@@ -12,23 +12,18 @@ module rca #(
     
     always {
         // implement ripple-carry-adder logic here 
-        // cout = 0
-        // s = 0 
-        
+
         // apply input a, b and carry-in
         fa.a = a
         fa.b = b
-        //fa.cin = 0;
         
         repeat(i, SIZE) { 
             if (i == 0) {
-                // fa.a[i] = a[i];
-                // fa.b[i] = b[i] ^ cin;
+
                 fa.cin[i] = cin;
             }
             else {
-                // fa.a[i] = a[i];
-                // fa.b[i] = b[i] ^ cin;
+
                 fa.cin[i] = fa.cout[i-1]
             }
         }

@@ -23,13 +23,11 @@ module alu (
         adder.b = b;
         adder.alufn_signal = alufn_signal[0];
         
-        // out = 0
         // flags from adder
         z = adder.z;
         v = adder.v;
         n = adder.n;
        
-        
         compare.z = adder.z
         compare.v = adder.v
         compare.n = adder.n
@@ -50,15 +48,14 @@ module alu (
         // divider.a = a;
         //divider.b = b;
         
-        //out = multiplier.mul;
         
         case (alufn_signal[5:4])
         {
             // adder result
             b00: 
-                case(alufn_signal[1:0]) { 
-                    b00: out = adder.out;
-                    b10: out = multiplier.mul;
+                case(alufn_signal[2:1]) { 
+                    b0: out = adder.out;
+                    b1: out = multiplier.mul;
                     //11: out = divider.d;
                     default: out = 32b0;
                 }

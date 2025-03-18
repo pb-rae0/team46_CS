@@ -31,9 +31,7 @@ module alchitry_top (
         rst = reset_cond.out    // conditioned reset
         
         led = 8h00             // turn LEDs off
-        
-        // led = c{3b0, io_button} // connect buttons to LEDs
-        
+                
         usb_tx = usb_rx          // loop serial port
        
 

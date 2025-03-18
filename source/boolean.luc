@@ -44,10 +44,7 @@ module boolean (
             b1010: bool = a;     // Pass-through a: 1010 
             default: bool = 32b0; 
         }
-        
-        // a = 32b11110000111100001111000011110000;
-        // b = 32b00001111000011110000111100001111;
-        // alufn_signal = 4b1000; // AND operation
+       
 
         
     }

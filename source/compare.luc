@@ -5,18 +5,14 @@ module compare (
     input alufn[6],
     output cmp
 ) {
-    mux_4 mux;
+    // mux_4 mux;
     always {
-        mux.s0 = alufn[1];
-        mux.s1 = alufn[2];
-        
-        mux.in[0] = 0;
-        mux.in[1] = z
-        mux.in[2] = n^v;
-        mux.in[3] = z|(n^v)
-        
-        
-        cmp = mux.out
+        case(alufn[2:1]){
+          b01: cmp = z // a == b
+          b10: cmp = n ^ v // a < b
+          b11: cmp = z | (n ^ v) //a <= b
+          default: cmp = 0
+        }
         
     }
 }
