@@ -6,7 +6,7 @@ module rca #(
     input b[SIZE],
     input cin,
     output s[SIZE]
-    // output cout
+    //output cout
 ) {
     fa fa[SIZE];
     
@@ -18,7 +18,7 @@ module rca #(
         // apply input a, b and carry-in
         fa.a = a
         fa.b = b
-        // fa.cin = 0;
+        //fa.cin = 0;
         
         repeat(i, SIZE) { 
             if (i == 0) {
@@ -33,7 +33,7 @@ module rca #(
             }
         }
         
-        // cout = fa.cout[SIZE-1]
+        //cout = fa.cout[SIZE-1]
         s = fa.s;
     }
 }

@@ -166,6 +166,12 @@
                     "type": "Component",
                     "path": "Pulses/edge_detector.luc"
                 }
+            },
+            {
+                "file": {
+                    "type": "DiskFile",
+                    "path": "source/divider.luc"
+                }
             }
         ],
         "constraintFiles": [

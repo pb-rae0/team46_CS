@@ -13,6 +13,7 @@ module alu (
     shifter shifter;
     boolean boolean;
     multiplier multiplier;
+    // divider divider;
     
     always {
         // implement alu logic here
@@ -46,6 +47,9 @@ module alu (
         multiplier.a = a;
         multiplier.b = b;
         
+        // divider.a = a;
+        //divider.b = b;
+        
         //out = multiplier.mul;
         
         case (alufn_signal[5:4])
@@ -53,18 +57,19 @@ module alu (
             // adder result
             b00: 
                 case(alufn_signal[1:0]) { 
-                    b0: out = adder.out;
-                    b1: out = multiplier.mul;
+                    b00: out = adder.out;
+                    b10: out = multiplier.mul;
+                    //11: out = divider.d;
                     default: out = 32b0;
                 }
             
-            // comparison result, concatenate 31 zero bits
+            // bool result, concatenate 31 zero bits
             b01: out = boolean.bool;
             
-            // boolean unit test case
+            // shifter unit test case
             b10: out = shifter.out;
             
-            // shifter unit test case
+            // compare unit test case
             b11: out = c{31x{b0}, compare.cmp};
             
             default: out = 32b0;

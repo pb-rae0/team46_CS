@@ -17,11 +17,13 @@ module x_bit_left_shifter #(
         shift_unit.s0 = SIZEx{do_shift}
         
         // remaining pattern
-        shifted_pattern = a[SIZE - 1 - SHIFT:0]
+        shifted_pattern = c{a[SIZE - 1 - SHIFT:0],SHIFTx{pad}}
         
         // for each bit, represented by an array of mux_2, set input as new shifted pattern
         repeat (i, SIZE){
-            shift_unit.in[i] = c{shifted_pattern, SHIFTx{pad}}
+            //shift_unit.in[i] = c{shifted_pattern, SHIFTx{pad}}
+            shift_unit.in[i][0] = a[i]
+            shift_unit.in[i][1] = shifted_pattern[i]
         }
         
         // output only reflects shifted pattern if do_shift set to 1

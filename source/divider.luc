@@ -1,0 +1,9 @@
+module divider (
+    input a[32],  // Dividend
+    input b[32],  // Divisor
+    output d[32]  // a / b
+) {
+    always {
+        d = a / b;  // Signed division
+    }
+}
